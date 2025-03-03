@@ -18,7 +18,7 @@ const fs = require('fs');
     await page.goto('https://chatgpt.com', { waitUntil: 'domcontentloaded' });
     
     // Wait for the chat sidebar to be visible first
-    await page.waitForSelector('nav', { timeout: 60000 });
+    await page.waitForSelector('div > div > nav', { timeout: 60000 });
     
     // Wait for the specific chat and ensure it's visible
     await page.waitForSelector('a[title="Nanic Wellness Website Flow"]', { timeout: 60000 });
