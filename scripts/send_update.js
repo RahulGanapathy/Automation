@@ -16,15 +16,15 @@ const COOKIE_FILE = 'cookies.json';
   }
 
   // Go to ChatGPT
-  await page.goto('https://chat.openai.com', { waitUntil: 'networkidle2' });
+  await page.goto('https://chatgpt.com', { waitUntil: 'networkidle2' });
 
   // Save updated cookies for future runs
   const newCookies = await page.cookies();
   fs.writeFileSync(COOKIE_FILE, JSON.stringify(newCookies, null, 2));
 
   // Navigate to the specific chat (Modify this selector)
-  await page.waitForSelector('text=Your Chat Title');
-  await page.click('text=Your Chat Title');
+  await page.waitForSelector('text=Nanic Wellness Website Flow');
+  await page.click('text=Nanic Wellness Website Flow');
 
   // Wait for the input area and send a message
   await page.waitForSelector('textarea');

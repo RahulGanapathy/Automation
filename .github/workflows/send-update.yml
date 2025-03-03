@@ -1,35 +1,25 @@
-name: Send ChatGPT Update
+name: Send Update to ChatGPT
 
 on:
   schedule:
-    - cron: "0 * * * *"  # Runs every hour
-  workflow_dispatch:
+    - cron: "0 * * * *" # Runs every hour
+  workflow_dispatch: # Allows manual trigger
 
 jobs:
-  send-update:
+  send-message:
     runs-on: ubuntu-latest
+
     steps:
-      - name: Check out repository
+      - name: Checkout repository
         uses: actions/checkout@v3
 
-      - name: Set up Node.js
+      - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: '16'
+          node-version: "18"
 
-      - name: Restore Cookies
-        id: cache-cookies
-        uses: actions/cache@v3
-        with:
-          path: cookies.json
-          key: chatgpt-session
+      - name: Install dependencies
+        run: npm install
 
-      - name: Run update script
-        run: node send_update.js
-
-      - name: Save Cookies
-        if: always()
-        uses: actions/cache@v3
-        with:
-          path: cookies.json
-          key: chatgpt-session
+      - name: Run Puppeteer script
+        run: node scripts/send_update.js
