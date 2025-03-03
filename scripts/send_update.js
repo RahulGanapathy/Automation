@@ -10,34 +10,49 @@ const fs = require('fs');
 
     const page = await browser.newPage();
     
-    // Load cookies
+    // Set a viewport and a user agent to mimic a real browser
+    await page.setViewport({ width: 1280, height: 800 });
+    await page.setUserAgent('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/98.0.4758.102 Safari/537.36');
+    
+    // Load cookies (ensure these are valid for chatgpt.com)
     const cookies = JSON.parse(fs.readFileSync('cookies.json', 'utf8'));
     await page.setCookie(...cookies);
     
-    // Navigate to ChatGPT
-    await page.goto('https://chatgpt.com', { waitUntil: 'domcontentloaded' });
+    // Navigate to ChatGPT (chatgpt.com)
+    await page.goto('https://chatgpt.com', { waitUntil: 'networkidle0' });
     
-    // Wait for the chat sidebar to be visible first
+    // Extra wait for dynamic content to load
+    await page.waitForTimeout(10000);
+    console.log("Page loaded, attempting to find navbar...");
+
+    // Wait for the navbar inside two nested div elements (increase timeout)
     await page.waitForSelector('div > div > nav', { timeout: 60000 });
+    console.log("Navbar found, attempting to find chat link...");
+
+    // Wait for the specific chat link using the correct selector
+    await page.waitForSelector('a[title="Nanic Wellness Website Flow"]', { timeout: 55000 });
     
-    // Wait for the specific chat and ensure it's visible
-    await page.waitForSelector('a[title="Nanic Wellness Website Flow"]', { timeout: 60000 });
-    
-    // Scroll the element into view
+    // Scroll the chat link into view
     await page.evaluate(() => {
-        document.querySelector('a[title="Nanic Wellness Website Flow"]').scrollIntoView();
+        const chatLink = document.querySelector('a[title="Nanic Wellness Website Flow"]');
+        if (chatLink) {
+            chatLink.scrollIntoView();
+        }
     });
     
     // Click on the chat link
     await page.click('a[title="Nanic Wellness Website Flow"]');
-    
+    console.log("Chat link clicked, waiting for chat input...");
+
     // Wait for chat input to load
-    await page.waitForSelector('textarea', { timeout: 60000 });
-    
+    await page.waitForSelector('textarea', { timeout: 25000 });
+    console.log("Chat input found, sending message...");
+
     // Type and send message
     await page.type('textarea', 'Update');
     await page.keyboard.press('Enter');
     
-    // Close browser
+    console.log("Message sent successfully!");
+    
     await browser.close();
 })();
