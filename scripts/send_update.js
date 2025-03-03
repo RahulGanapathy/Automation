@@ -15,11 +15,16 @@ const fs = require('fs');
     await page.setCookie(...cookies);
     
     // Navigate to ChatGPT
-    await page.goto('https://chatgpt.com', { waitUntil: 'domcontentloaded' });
+    await page.goto('https://chatgpt.com', { waitUntil: 'networkidle2' });
     console.log("Page loaded, checking for navbar...");
     
+    const content = await page.content();
+    fs.writeFileSync('page_dump.html', content);
+    console.log("Page content dumped for debugging.");
+
+
     // Wait for the sidebar (wrapped in divs) and navbar
-    await page.waitForSelector("nav", { visible: true, timeout: 60000 });
+    await page.waitForSelector('div:has(nav)', { visible: true, timeout: 60000 });
     console.log("Navbar found.");
     
     // Function to wait for XPath
