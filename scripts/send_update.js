@@ -19,7 +19,7 @@ const fs = require('fs');
     console.log("Page loaded, checking for navbar...");
     
     // Wait for the sidebar (wrapped in divs) and navbar
-    await page.waitForXPath("//nav", { visible: true, timeout: 60000 });
+    await page.waitForSelector("nav", { visible: true, timeout: 60000 });
     console.log("Navbar found.");
     
     // Function to wait for XPath
