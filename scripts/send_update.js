@@ -30,7 +30,7 @@ const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
 
     // Wait for the navbar inside two nested div elements
     try {
-        await page.waitForSelector('div > div > nav', { timeout: 30000 });
+        await page.waitForSelector('div > div > nav', { timeout: 45000 });
         console.log("Navbar found.");
     } catch(e) {
         console.log("Navbar not found:", e);
@@ -40,7 +40,7 @@ const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
 
     // Use XPath to locate the chat link by its text content
     try {
-        await page.waitForXPath("//a[contains(., 'Nanic Wellness Website Flow')]", { timeout: 30000 });
+        await page.waitForXPath("//a[contains(., 'Nanic Wellness Website Flow')]", { timeout: 45000 });
         const [chatLink] = await page.$x("//a[contains(., 'Nanic Wellness Website Flow')]");
         if (chatLink) {
             // Scroll the chat link into view and click it
