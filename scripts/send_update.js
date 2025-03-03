@@ -23,7 +23,7 @@ const COOKIE_FILE = 'cookies.json';
   fs.writeFileSync(COOKIE_FILE, JSON.stringify(newCookies, null, 2));
 
   // Navigate to the specific chat (Modify this selector)
-  await page.waitForSelector('div[title="Nanic Wellness Website Flow]"');
+  await page.waitForSelector('div[title="Nanic Wellness Website Flow"]', { timeout: 60000 });
   await page.click('div[title="Nanic Wellness Website Flow"]');
 
   // Wait for the input area and send a message
