@@ -1,0 +1,35 @@
+name: Send ChatGPT Update
+
+on:
+  schedule:
+    - cron: "0 * * * *"  # Runs every hour
+  workflow_dispatch:
+
+jobs:
+  send-update:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v3
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '16'
+
+      - name: Restore Cookies
+        id: cache-cookies
+        uses: actions/cache@v3
+        with:
+          path: cookies.json
+          key: chatgpt-session
+
+      - name: Run update script
+        run: node send_update.js
+
+      - name: Save Cookies
+        if: always()
+        uses: actions/cache@v3
+        with:
+          path: cookies.json
+          key: chatgpt-session
