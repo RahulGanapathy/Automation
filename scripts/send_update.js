@@ -1,40 +1,43 @@
-const puppeteer = require('puppeteer');
+const puppeteer = require('puppeteer-core');
 const fs = require('fs');
 
-const COOKIE_FILE = 'cookies.json';
-
 (async () => {
-  // Launch Puppeteer in headless mode
-  const browser = await puppeteer.launch({ headless: true });
-  const page = await browser.newPage();
+    const browser = await puppeteer.launch({
+        executablePath: '/usr/bin/google-chrome',
+        headless: true,
+        args: ['--no-sandbox', '--disable-setuid-sandbox']
+    });
 
-  // Load and set cookies before navigating
-  if (fs.existsSync(COOKIE_FILE)) {
-    const cookies = JSON.parse(fs.readFileSync(COOKIE_FILE, 'utf8'));
+    const page = await browser.newPage();
+    
+    // Load cookies
+    const cookies = JSON.parse(fs.readFileSync('cookies.json', 'utf8'));
     await page.setCookie(...cookies);
-    console.log("Cookies loaded.");
-  }
-
-  // Go to ChatGPT
-  await page.goto('https://chatgpt.com', { waitUntil: 'networkidle2' });
-
-  // Save updated cookies for future runs
-  const newCookies = await page.cookies();
-  fs.writeFileSync(COOKIE_FILE, JSON.stringify(newCookies, null, 2));
-
-  await page.waitForSelector('a[title="Nanic Wellness Website Flow"]', { timeout: 60000 });
-
-  // Scroll the element into view (if necessary)
-  await page.evaluate(() => {document.querySelector('a[title="Nanic Wellness Website Flow"]').scrollIntoView();});
-
-  // Click on the chat link
-  await page.click('a[title="Nanic Wellness Website Flow"]');
-
-  // Wait for the input area and send a message
-  await page.waitForSelector('textarea');
-  await page.type('textarea', 'Update');
-  await page.keyboard.press('Enter');
-
-  console.log('Message sent successfully!');
-  await browser.close();
+    
+    // Navigate to ChatGPT
+    await page.goto('https://chatgpt.com', { waitUntil: 'domcontentloaded' });
+    
+    // Wait for the chat sidebar to be visible first
+    await page.waitForSelector('nav', { timeout: 60000 });
+    
+    // Wait for the specific chat and ensure it's visible
+    await page.waitForSelector('a[title="Nanic Wellness Website Flow"]', { timeout: 60000 });
+    
+    // Scroll the element into view
+    await page.evaluate(() => {
+        document.querySelector('a[title="Nanic Wellness Website Flow"]').scrollIntoView();
+    });
+    
+    // Click on the chat link
+    await page.click('a[title="Nanic Wellness Website Flow"]');
+    
+    // Wait for chat input to load
+    await page.waitForSelector('textarea', { timeout: 60000 });
+    
+    // Type and send message
+    await page.type('textarea', 'Update');
+    await page.keyboard.press('Enter');
+    
+    // Close browser
+    await browser.close();
 })();
