@@ -24,11 +24,11 @@ const fs = require('fs');
 
 
     // Wait for the sidebar (wrapped in divs) and navbar
-    await page.waitForSelector('div:has(nav)', { visible: true, timeout: 60000 });
+    await page.waitForSelector('div:has(nav)', { visible: true, timeout: 90000 });
     console.log("Navbar found.");
     
     // Function to wait for XPath
-    async function waitForXPath(page, xpath, timeout = 60000) {
+    async function waitForXPath(page, xpath, timeout = 90000) {
         const start = Date.now();
         while (Date.now() - start < timeout) {
             const elementHandle = await page.evaluateHandle((xpath) => {
@@ -51,7 +51,7 @@ const fs = require('fs');
     console.log("Chat link found and clicked.");
     
     // Wait for chat input to load
-    await page.waitForSelector('textarea', { visible: true, timeout: 60000 });
+    await page.waitForSelector('textarea', { visible: true, timeout: 90000 });
     
     // Type and send message
     await page.type('textarea', 'Update');
